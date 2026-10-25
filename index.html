@@ -13,6 +13,22 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="site-loader" id="site-loader" role="status" aria-live="polite" hidden>
+    <div class="site-loader__content">
+      <span class="site-loader__emblem" aria-hidden="true">
+        <img class="site-loader__mark" src="assets/arjun-logo.png" alt="" width="68" height="68" />
+      </span>
+      <p class="site-loader__name">Arjun Perunelly</p>
+      <span class="site-loader__label">Loading portfolio</span>
+      <div class="site-loader__wave" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="site-loader__progress" role="progressbar" aria-label="Portfolio loading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <span class="site-loader__percentage" aria-hidden="true">0%</span>
+      </div>
+    </div>
+  </div>
+
   <a class="skip-link" href="#main">Skip to content</a>
   <canvas class="magnet-lines-canvas" aria-hidden="true"></canvas>
 
@@ -107,43 +123,45 @@
       <div class="page-width">
         <div class="section-heading section-heading-projects" data-reveal>
           <h2 id="projects-title">Built to <span>understand.</span></h2>
-          <p class="section-intro">One public project, built to explore how a frontend and API can work together.</p>
+          <p class="section-intro">Two projects, each with its own interface and story.</p>
         </div>
-        <div class="project-feature" data-reveal>
-          <div class="project-story">
-            <h3>Neko<span class="title-period">.</span></h3>
-            <p class="project-meta">Featured project <span aria-hidden="true">·</span> Web app</p>
-            <p class="project-description">An anime companion web app for discovering anime, searching titles, and building a watchlist with data from AniList. A project for exploring how a frontend and a small API can work together.</p>
-            <ul class="technology-list" aria-label="Verified technologies">
-              <li>React</li><li>Vite</li><li>Python</li><li>FastAPI</li><li>AniList API</li>
-            </ul>
-            <a class="project-link" href="https://github.com/ArjunPerunelly/neko" target="_blank" rel="noopener noreferrer">View repository
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9" /><path d="M18 13v6H5V6h6" /></svg>
-            </a>
-          </div>
-          <div class="project-architecture" role="group" aria-label="Neko project architecture">
-            <div class="architecture-heading">
-              <p class="architecture-label">How the pieces connect</p>
-              <span class="architecture-status"><span aria-hidden="true"></span>System map</span>
-            </div>
-            <div class="architecture-flow">
-              <div class="architecture-node node-frontend">
-                <span class="node-label">Interface</span>
-                <strong>React <i>+</i> Vite</strong>
+        <div class="project-card-grid">
+          <a class="project-card project-card-neko" href="projects/neko.html" aria-labelledby="neko-card-title" aria-describedby="neko-card-description" data-reveal>
+            <div class="project-card-content">
+              <div class="project-card-media project-card-media-neko">
+                <img src="assets/neko-preview.png" alt="" aria-hidden="true" loading="lazy" width="1916" height="963" />
               </div>
-              <svg class="flow-connector" viewBox="0 0 36 18" aria-hidden="true"><path d="M1 9h31m-7-7 7 7-7 7" /></svg>
-              <div class="architecture-node node-backend">
-                <span class="node-label">API</span>
-                <strong>Python <i>+</i> FastAPI</strong>
-              </div>
-              <svg class="flow-connector" viewBox="0 0 36 18" aria-hidden="true"><path d="M1 9h31m-7-7 7 7-7 7" /></svg>
-              <div class="architecture-node node-data">
-                <span class="node-label">Anime data</span>
-                <strong>AniList</strong>
+              <div class="project-card-copy">
+                <p class="project-meta">Web app <span aria-hidden="true">·</span> Anime discovery</p>
+                <h3 id="neko-card-title">Neko<span class="title-period">.</span></h3>
+                <p id="neko-card-description">Discover anime, search AniList data, manage a watchlist, and chat with the AI assistant powered by Conferbot.</p>
+                <ul class="technology-list" aria-label="Neko technologies">
+                  <li>React</li><li>Vite</li><li>Python</li><li>FastAPI</li><li>AniList API</li><li>Conferbot</li>
+                </ul>
+                <span class="project-card-action">Open project details
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 5l7 7-7 7" /></svg>
+                </span>
               </div>
             </div>
-            <p class="architecture-caption">Stack details verified in the public repository.</p>
-          </div>
+          </a>
+          <a class="project-card project-card-ente" href="projects/ente-nadu.html" aria-labelledby="ente-nadu-card-title" aria-describedby="ente-nadu-card-description" data-reveal>
+            <div class="project-card-content">
+              <div class="project-card-media project-card-media-ente">
+                <img src="assets/ente-nadu-preview.png" alt="" aria-hidden="true" loading="lazy" width="1901" height="956" />
+              </div>
+              <div class="project-card-copy">
+                <p class="project-meta">School project <span aria-hidden="true">·</span> Community platform</p>
+                <h3 id="ente-nadu-card-title">Ente Nadu<span class="title-period">.</span></h3>
+                <p id="ente-nadu-card-description">A school-day directory concept intended to help residents find local services and make skilled workers more visible.</p>
+                <ul class="technology-list" aria-label="Ente Nadu technologies">
+                  <li>React.js</li><li>Firebase</li><li>JavaScript</li>
+                </ul>
+                <span class="project-card-action">Open project details
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 5l7 7-7 7" /></svg>
+                </span>
+              </div>
+            </div>
+          </a>
         </div>
         <div class="project-more" data-reveal>
           <p>More experiments appear on GitHub as they take shape.</p>

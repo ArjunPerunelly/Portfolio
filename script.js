@@ -188,6 +188,70 @@ const mountContactMagnetField = (canvas) => {
 
   root.classList.add('js-enabled');
 
+  const loader = document.querySelector('.site-loader');
+  const shouldShowLoader = () => {
+    const navigationEntry = performance.getEntriesByType?.('navigation')?.[0];
+    const isReload = navigationEntry?.type === 'reload'
+      || (!navigationEntry && performance.navigation?.type === 1);
+    let hasVisited = false;
+    try {
+      hasVisited = window.sessionStorage.getItem('arjun-portfolio-visited') === '1';
+      window.sessionStorage.setItem('arjun-portfolio-visited', '1');
+    } catch {
+      // Storage may be unavailable for local files or in a restricted browser context.
+    }
+    let sameSiteReferrer = false;
+    if (document.referrer) {
+      try {
+        sameSiteReferrer = new URL(document.referrer).origin === window.location.origin;
+      } catch {
+        // Treat an unreadable referrer as an external first visit.
+      }
+    }
+    return isReload || (!hasVisited && !sameSiteReferrer);
+  };
+
+  if (loader && !reduceMotion.matches && shouldShowLoader()) {
+    const pageElements = [...document.body.children].filter((element) => element !== loader);
+    const loadingStartedAt = performance.now();
+    const loadingDuration = 1700;
+    const percentage = loader.querySelector('.site-loader__percentage');
+    const progressBar = loader.querySelector('.site-loader__progress');
+    let progressFrame = 0;
+    let loadingFinished = false;
+
+    pageElements.forEach((element) => { element.inert = true; });
+    loader.hidden = false;
+    root.classList.add('is-loading');
+
+    const updateProgress = (now) => {
+      const value = Math.min(100, Math.round(((now - loadingStartedAt) / loadingDuration) * 100));
+      if (percentage) percentage.textContent = `${value}%`;
+      progressBar?.setAttribute('aria-valuenow', String(value));
+      if (value < 100) progressFrame = window.requestAnimationFrame(updateProgress);
+    };
+    progressFrame = window.requestAnimationFrame(updateProgress);
+
+    const finishLoading = () => {
+      if (loadingFinished) return;
+      loadingFinished = true;
+      window.removeEventListener('load', finishLoading);
+      const remainingMinimum = Math.max(0, loadingDuration - (performance.now() - loadingStartedAt));
+
+      window.setTimeout(() => {
+        window.cancelAnimationFrame(progressFrame);
+        if (percentage) percentage.textContent = '100%';
+        progressBar?.setAttribute('aria-valuenow', '100');
+        root.classList.remove('is-loading');
+        pageElements.forEach((element) => { element.inert = false; });
+        window.setTimeout(() => { loader.hidden = true; }, 300);
+      }, remainingMinimum);
+    };
+
+    window.addEventListener('load', finishLoading, { once: true });
+    window.setTimeout(finishLoading, loadingDuration);
+  }
+
   if (skillsMarquee && marqueeToggle) {
     const updateMarqueePreference = (event) => {
       const shouldReduce = event?.matches ?? reduceMotion.matches;
@@ -213,11 +277,58 @@ const mountContactMagnetField = (canvas) => {
     }
   }
 
+  document.querySelectorAll('[data-accordion-gallery]').forEach((gallery) => {
+    const panels = [...gallery.querySelectorAll('.ag-panel')];
+    if (!panels.length) return;
+
+    const ratioValue = Number.parseFloat(gallery.dataset.expandRatio || '0.52');
+    const expandRatio = Math.min(0.9, Math.max(0.2, Number.isFinite(ratioValue) ? ratioValue : 0.52));
+    const expandedGrow = panels.length > 1
+      ? (expandRatio * (panels.length - 1)) / (1 - expandRatio)
+      : 1;
+    const indexValue = Number.parseInt(gallery.dataset.defaultIndex || '2', 10);
+    let activeIndex = Math.min(panels.length - 1, Math.max(0, Number.isFinite(indexValue) ? indexValue : 2));
+
+    const setActive = (nextIndex) => {
+      activeIndex = nextIndex;
+      panels.forEach((panel, index) => {
+        const isActive = index === activeIndex;
+        panel.classList.toggle('is-active', isActive);
+        panel.setAttribute('aria-checked', String(isActive));
+        panel.tabIndex = isActive ? 0 : -1;
+        panel.style.flexGrow = isActive ? String(expandedGrow) : '1';
+        panel.style.setProperty('--ag-tilt', (isActive ? 0 : index < activeIndex ? 6 : -6) + 'deg');
+      });
+    };
+
+    setActive(activeIndex);
+
+    panels.forEach((panel, index) => {
+      panel.addEventListener('mouseenter', () => {
+        if (finePointer.matches && gallery.dataset.trigger !== 'click') setActive(index);
+      });
+      panel.addEventListener('focus', () => setActive(index));
+      panel.addEventListener('click', () => setActive(index));
+      panel.addEventListener('keydown', (event) => {
+        let nextIndex = index;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (index + 1) % panels.length;
+        else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (index - 1 + panels.length) % panels.length;
+        else if (event.key === 'Home') nextIndex = 0;
+        else if (event.key === 'End') nextIndex = panels.length - 1;
+        else return;
+
+        event.preventDefault();
+        setActive(nextIndex);
+        panels[nextIndex].focus();
+      });
+    });
+  });
+
   if (!reduceMotion.matches && 'IntersectionObserver' in window) {
     root.classList.add('has-motion');
 
     const staggerGroups = [
-      ['.project-feature > [data-reveal]', 120],
+      ['.project-card-grid > [data-reveal]', 110],
       ['.about-layout > [data-reveal]', 120],
       ['.skills-grid > .skill-card', 85]
     ];
@@ -308,7 +419,7 @@ const mountContactMagnetField = (canvas) => {
   }
 
   const magnetCanvas = document.querySelector('.magnet-lines-canvas');
-  const borderGlowTargets = [...document.querySelectorAll('.skill-card, .project-architecture, .contact-card, .button, .primary-navigation a, .nav-linkedin, .nav-github, .menu-toggle, .skills-marquee-toggle, .back-to-top')];
+  const borderGlowTargets = [...document.querySelectorAll('.project-card, .skill-card, .contact-card, .button, .primary-navigation a, .nav-linkedin, .nav-github, .menu-toggle, .skills-marquee-toggle, .back-to-top')];
   let removeMagnetField = null;
   let removeBorderGlowTracking = null;
   const syncMagnetField = () => {
