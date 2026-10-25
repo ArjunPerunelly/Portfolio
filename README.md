@@ -1,6 +1,6 @@
 # Arjun Perunelly — Portfolio
 
-A responsive portfolio for an Electronics and Computer Engineering student, using a refined charcoal, warm-white, and muted-green visual system with editorial spacing, crisp project surfaces, and restrained motion. Built with plain HTML, CSS, and JavaScript; it has no build step or package dependencies.
+A responsive portfolio for an Electronics and Computer Engineering student. Its palette uses the supplied colors: `#0D1B2A`, `#1B263B`, `#415A77`, `#778D7A`, `#D4C4A8`, and `#F4F1DE`. The dotted texture, oversized sans-serif type, compact icon navigation, project case file, skill cards, and dark contact panel take visual direction from [the reference site](https://xo-aditya.web.app/). The implementation keeps Arjun’s own content and identity. Built with plain HTML, CSS, and JavaScript; it has no build step or package dependencies.
 
 ## Run locally
 
@@ -21,12 +21,15 @@ GitHub Pages serves `index.html` directly. No build command or framework configu
 
 - The featured project links to the public [Neko repository](https://github.com/ArjunPerunelly/neko).
 - Project technologies are listed based on the repository files.
-- The temporary professional email is linked in the contact section and footer. LinkedIn appears in the navigation, hero, contact section, and footer.
+- The Neko system map is a diagram of verified technologies; no project screenshot was available in the portfolio assets.
+- No live demo is linked. The contact email and LinkedIn profile were supplied by Arjun for this portfolio.
 - To update the page, edit `index.html`, `styles.css`, and `script.js` in the repository root.
 
 ## Motion and animation sources
 
-The portfolio's motion is implemented locally in `styles.css` and `script.js`. It includes a hero text entrance, one-time `IntersectionObserver` reveals, a divider draw, a page scroll-progress bar, a gentle scroll cue, and restrained link and project hover states. The skills strip is a custom CSS marquee built from skills already listed on the page; it uses a constant-speed transform, pauses on hover for fine pointers, and has a keyboard- and touch-operable pause control. The strip is hidden when reduced motion is requested. No animation library, build step, or package dependency is required.
+The portfolio's motion is implemented locally in `styles.css` and `script.js`. It includes a staggered hero entrance, one-time `IntersectionObserver` reveals, section rules that draw in as they enter view, a vertical page-progress rail, a gentle scroll cue, and restrained link and project hover states. The skills strip is a custom CSS marquee built from skills already listed on the page; it uses a constant-speed transform, pauses on hover for fine pointers, and has a keyboard- and touch-operable pause control. The strip is hidden when reduced motion is requested. No animation library, build step, or package dependency is required.
+
+The viewport-wide magnetic line field is a custom Canvas 2D effect that responds to fine-pointer movement. Additional effects use a soft hover spotlight on the existing skills grid and a rounded-rectangle sage border highlight whose brightest point follows the pointer around the project card, skill/contact cards, the Neko system map, and CTA/navigation controls. CTA buttons use matching rounded corners. Keyboard focus shows a still highlight. These take broad interaction cues from React Bits' MagicBento, BorderGlow, and SpecularButton references, but are independently written CSS rather than copies or ports of their component source. The supplied components use React (MagicBento also lists Hugeicons), and SpecularButton uses WebGL2; this static implementation adds no packages and uses no WebGL. Pointer tracking is limited to the page-wide magnetic field and bordered elements, and disabled for touch-only and reduced-motion environments. Reduced-motion preferences show a static border highlight and remove the added sheen transition. React Bits' [MIT + Commons Clause license](https://github.com/DavidHDev/react-bits/blob/main/LICENSE.md) permits use in products but prohibits redistribution of the components and ported versions; no React Bits code or dependency is included.
 
 ### Animmaster Lib review
 
