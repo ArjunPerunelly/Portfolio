@@ -10,23 +10,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../styles.css?v=v8-skip-loader-on-return" />
+  <script>try{sessionStorage.setItem('returning_from_subpage','true');}catch(e){}</script>
 </head>
 <body>
-  <div class="site-loader" id="site-loader" role="status" aria-live="polite" hidden>
-    <div class="site-loader__content">
-      <span class="site-loader__emblem" aria-hidden="true">
-        <img class="site-loader__mark" src="../assets/arjun-logo.png" alt="" width="68" height="68" />
-      </span>
-      <p class="site-loader__name">Arjun Perunelly</p>
-      <span class="site-loader__label">Loading portfolio</span>
-      <div class="site-loader__wave" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-      <div class="site-loader__progress" role="progressbar" aria-label="Portfolio loading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <span class="site-loader__percentage" aria-hidden="true">0%</span>
-      </div>
-    </div>
-  </div>
   <a class="skip-link" href="#main">Skip to content</a>
+  <canvas class="magnet-lines-canvas" aria-hidden="true"></canvas>
   <header class="project-detail-header" id="top">
     <div class="page-width project-detail-header-inner">
       <a class="wordmark" href="../index.html" aria-label="Arjun Perunelly, portfolio home">
@@ -51,7 +40,7 @@
           <h2 id="neko-gallery-title">Gallery</h2>
           <p>A few screens from the Neko app.</p>
         </div>
-        <div class="accordion-gallery" role="radiogroup" aria-label="Neko app screenshots" data-accordion-gallery data-default-index="1" data-trigger="hover">
+        <div class="accordion-gallery" role="radiogroup" aria-label="Neko app screenshots" data-accordion-gallery data-default-index="1" data-interval="3000" data-trigger="hover">
           <button class="ag-panel" type="button" role="radio" aria-checked="false" tabindex="-1" aria-label="Neko Explore screen">
             <span class="ag-panel__frame" aria-hidden="true"><span class="ag-panel__media"><img src="../assets/neko-gallery-explore.png" alt="" loading="lazy" decoding="async" draggable="false" /></span><span class="ag-panel__overlay"></span></span>
             <span class="ag-panel__label" aria-hidden="true"><span class="ag-panel__bar"></span><span class="ag-panel__text">Explore</span></span>
@@ -125,6 +114,6 @@
       </a>
     </div>
   </footer>
-  <script src="../script.js" defer></script>
+  <script src="../script.js?v=v8-skip-loader-on-return" defer></script>
 </body>
 </html>

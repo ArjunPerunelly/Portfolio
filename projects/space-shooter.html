@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#F4F1DE" />
+  <meta name="description" content="Project notes for Space Shooter, an arcade 2D canvas web game by Arjun Perunelly." />
+  <link rel="icon" type="image/png" href="../assets/arjun-logo.png" />
+  <title>Space Shooter — Project Details | Arjun Perunelly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css?v=v8-skip-loader-on-return" />
+  <script>try{sessionStorage.setItem('returning_from_subpage','true');}catch(e){}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <canvas class="magnet-lines-canvas" aria-hidden="true"></canvas>
+  <header class="project-detail-header" id="top">
+    <div class="page-width project-detail-header-inner">
+      <a class="wordmark" href="../index.html" aria-label="Arjun Perunelly, portfolio home">
+        <span class="wordmark-mark" aria-hidden="true"><img src="../assets/arjun-logo.png" alt="" /></span>
+        <span class="wordmark-name">Arjun Perunelly</span>
+      </a>
+      <nav class="project-breadcrumb" aria-label="Breadcrumb">
+        <ol><li><a href="../index.html#projects">Projects</a></li><li aria-current="page">Space Shooter</li></ol>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-width project-detail-main" id="main">
+    <article>
+      <header class="project-detail-hero" data-reveal>
+        <h1 class="project-detail-title">Space Shooter<span class="title-period">.</span></h1>
+        <p class="project-detail-summary">A high-refresh rate 2D retro arcade shooter built entirely with vanilla JavaScript and the HTML5 Canvas API, featuring custom collision detection and particle physics.</p>
+      </header>
+
+      <section class="project-gallery-section" aria-labelledby="space-gallery-title" data-reveal>
+        <div class="project-gallery-heading">
+          <h2 id="space-gallery-title">Gameplay Preview</h2>
+          <p>Custom 2D canvas engine with enemy wave generation and particle effects.</p>
+        </div>
+        <div class="accordion-gallery" role="radiogroup" aria-label="Space Shooter arcade gameplay" data-accordion-gallery data-default-index="0" data-trigger="hover">
+          <button class="ag-panel is-active" type="button" role="radio" aria-checked="true" tabindex="0" aria-label="Space Shooter gameplay screen">
+            <span class="ag-panel__frame" aria-hidden="true"><span class="ag-panel__media"><img src="../assets/space-shooter-preview.svg" alt="Space Shooter arcade gameplay" loading="lazy" decoding="async" draggable="false" /></span><span class="ag-panel__overlay"></span></span>
+            <span class="ag-panel__label" aria-hidden="true"><span class="ag-panel__bar"></span><span class="ag-panel__text">Arcade Gameplay</span></span>
+          </button>
+        </div>
+      </section>
+
+      <div class="project-detail-grid">
+        <section class="project-detail-section" aria-labelledby="space-overview-title" data-reveal>
+          <h2 id="space-overview-title">Project overview</h2>
+          <p>Space Shooter was engineered to understand game loops and low-level 2D graphics rendering without external game engines. It runs on a fixed-timestep `requestAnimationFrame` loop that updates velocities, evaluates bounding-circle collisions, and renders projectiles in real time.</p>
+          <p>Featuring progressive difficulty curves, procedural starfield parallax, audio synthesizers via Web Audio, and dynamic particle explosions when targets are destroyed.</p>
+        </section>
+
+        <aside class="project-detail-aside" aria-labelledby="space-details-title" data-reveal>
+          <h2 id="space-details-title">Project details</h2>
+          <dl class="project-detail-facts">
+            <div><dt>Type</dt><dd>Web Game / Arcade</dd></div>
+            <div><dt>Focus</dt><dd>HTML5 Canvas &amp; 2D Physics</dd></div>
+          </dl>
+          <div class="project-detail-stack">
+            <h2 id="space-stack-title">Technologies</h2>
+            <ul class="technology-list" aria-label="Space Shooter technologies">
+              <li>JavaScript (ES6+)</li><li>HTML5 Canvas</li><li>CSS3</li><li>Web Audio API</li>
+            </ul>
+          </div>
+          <div class="project-detail-actions">
+            <a class="button project-action-source" href="https://github.com/ArjunPerunelly" target="_blank" rel="noopener noreferrer">
+              View on GitHub
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9" /><path d="M18 13v6H5V6h6" /></svg>
+            </a>
+          </div>
+        </aside>
+
+        <section class="project-detail-section project-detail-explored" aria-labelledby="space-highlights-title" data-reveal>
+          <h2 id="space-highlights-title">Key technical highlights</h2>
+          <ul class="project-detail-list">
+            <li>Zero dependency vanilla JavaScript engine optimized for steady 60 FPS performance.</li>
+            <li>Multi-layered parallax starfields with variable radial particle velocity.</li>
+            <li>Bounding-radius collision detection between lasers, shields, and incoming obstacles.</li>
+            <li>Local storage integration for persistent high score tracking across sessions.</li>
+          </ul>
+        </section>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="page-width site-footer-inner">
+      <p class="site-footer-copy">&copy; <span id="year">2026</span> Arjun Perunelly. All rights reserved.</p>
+      <div class="site-footer-actions">
+        <a class="back-to-top" href="#top" aria-label="Back to top">
+          Back to top
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../script.js?v=v8-skip-loader-on-return" defer></script>
+</body>
+</html>

@@ -1,12 +1,11 @@
-// Original Canvas 2D magnetic field across the viewport. It uses a sparse,
-// demand-rendered grid so the static site does not need React or WebGL.
+// Original Canvas 2D magnetic field across the viewport.
 const mountContactMagnetField = (canvas) => {
   const context = canvas?.getContext('2d');
   if (!canvas || !context) return null;
 
   const spacing = 48;
   const radius = 260;
-  const opacity = 0.34;
+  const opacity = 0.25;
   const fade = 0.65;
   const stretch = 0.35;
   const baseAngle = -10 * Math.PI / 180;
@@ -124,9 +123,9 @@ const mountContactMagnetField = (canvas) => {
       if (Math.abs(angleDelta) > 0.002 || Math.abs(targetScale - line.scale) > 0.002) moving = true;
 
       const tint = Math.min(1, emphasis + pulseFlash * 0.24);
-      const red = Math.round(212 + (119 - 212) * tint);
-      const green = Math.round(196 + (141 - 196) * tint);
-      const blue = Math.round(168 + (122 - 168) * tint);
+      const red = Math.round(168 + (192 - 168) * tint);
+      const green = Math.round(85 + (132 - 85) * tint);
+      const blue = Math.round(247 + (252 - 247) * tint);
       const alpha = opacity * (1 - fade * (1 - emphasis)) + Math.min(0.12, pulseFlash * 0.035);
       const half = (14 * line.scale) / 2;
       context.save();
@@ -178,8 +177,6 @@ const mountContactMagnetField = (canvas) => {
   const progressFill = progress?.querySelector('span');
   const menuButton = document.querySelector('.menu-toggle');
   const navigation = document.querySelector('.primary-navigation');
-  const skillsMarquee = document.querySelector('.skills-marquee');
-  const marqueeToggle = document.querySelector('.skills-marquee-toggle');
   const sectionLinks = [...(navigation?.querySelectorAll('a[href^="#"]') || [])]
     .map((link) => ({ link, section: document.getElementById(link.getAttribute('href').slice(1)) }))
     .filter((item) => item.section);
@@ -188,156 +185,117 @@ const mountContactMagnetField = (canvas) => {
 
   root.classList.add('js-enabled');
 
-  const loader = document.querySelector('.site-loader');
-  const shouldShowLoader = () => {
-    const navigationEntry = performance.getEntriesByType?.('navigation')?.[0];
-    const isReload = navigationEntry?.type === 'reload'
-      || (!navigationEntry && performance.navigation?.type === 1);
-    let hasVisited = false;
-    try {
-      hasVisited = window.sessionStorage.getItem('arjun-portfolio-visited') === '1';
-      window.sessionStorage.setItem('arjun-portfolio-visited', '1');
-    } catch {
-      // Storage may be unavailable for local files or in a restricted browser context.
-    }
-    let sameSiteReferrer = false;
-    if (document.referrer) {
-      try {
-        sameSiteReferrer = new URL(document.referrer).origin === window.location.origin;
-      } catch {
-        // Treat an unreadable referrer as an external first visit.
-      }
-    }
-    return isReload || (!hasVisited && !sameSiteReferrer);
-  };
-
-  if (loader && !reduceMotion.matches && shouldShowLoader()) {
-    const pageElements = [...document.body.children].filter((element) => element !== loader);
-    const loadingStartedAt = performance.now();
-    const loadingDuration = 1700;
-    const percentage = loader.querySelector('.site-loader__percentage');
-    const progressBar = loader.querySelector('.site-loader__progress');
-    let progressFrame = 0;
-    let loadingFinished = false;
-
-    pageElements.forEach((element) => { element.inert = true; });
-    loader.hidden = false;
-    root.classList.add('is-loading');
-
-    const updateProgress = (now) => {
-      const value = Math.min(100, Math.round(((now - loadingStartedAt) / loadingDuration) * 100));
-      if (percentage) percentage.textContent = `${value}%`;
-      progressBar?.setAttribute('aria-valuenow', String(value));
-      if (value < 100) progressFrame = window.requestAnimationFrame(updateProgress);
-    };
-    progressFrame = window.requestAnimationFrame(updateProgress);
-
-    const finishLoading = () => {
-      if (loadingFinished) return;
-      loadingFinished = true;
-      window.removeEventListener('load', finishLoading);
-      const remainingMinimum = Math.max(0, loadingDuration - (performance.now() - loadingStartedAt));
-
-      window.setTimeout(() => {
-        window.cancelAnimationFrame(progressFrame);
-        if (percentage) percentage.textContent = '100%';
-        progressBar?.setAttribute('aria-valuenow', '100');
-        root.classList.remove('is-loading');
-        pageElements.forEach((element) => { element.inert = false; });
-        window.setTimeout(() => { loader.hidden = true; }, 300);
-      }, remainingMinimum);
-    };
-
-    window.addEventListener('load', finishLoading, { once: true });
-    window.setTimeout(finishLoading, loadingDuration);
-  }
-
-  if (skillsMarquee && marqueeToggle) {
-    const updateMarqueePreference = (event) => {
-      const shouldReduce = event?.matches ?? reduceMotion.matches;
-      marqueeToggle.hidden = shouldReduce;
-      if (shouldReduce) {
-        skillsMarquee.classList.remove('is-paused');
-        marqueeToggle.textContent = 'Pause ticker';
-        marqueeToggle.setAttribute('aria-label', 'Pause skills marquee');
-      }
-    };
-
-    updateMarqueePreference();
-    marqueeToggle.addEventListener('click', () => {
-      const isPaused = skillsMarquee.classList.toggle('is-paused');
-      marqueeToggle.textContent = isPaused ? 'Resume ticker' : 'Pause ticker';
-      marqueeToggle.setAttribute('aria-label', isPaused ? 'Resume skills marquee' : 'Pause skills marquee');
-    });
-
-    if (typeof reduceMotion.addEventListener === 'function') {
-      reduceMotion.addEventListener('change', updateMarqueePreference);
+  // ==========================================
+  // SITE PRELOADER SCREEN (HOMEPAGE ONLY)
+  // ==========================================
+  const loader = document.getElementById('site-loader');
+  if (loader) {
+    // If coming back from another page or back-forward navigation, skip immediately
+    if (document.documentElement.classList.contains('skip-loader')) {
+      loader.hidden = true;
+      document.body.classList.remove('is-loading');
     } else {
-      reduceMotion.addListener?.(updateMarqueePreference);
+      document.body.classList.add('is-loading');
+      const percentageEl = loader.querySelector('.site-loader__percentage');
+      const progressEl = loader.querySelector('.site-loader__progress');
+      const startTime = performance.now();
+      const duration = 2250;
+
+      const stepLoader = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const percent = Math.round(ease * 100);
+
+        if (percentageEl) percentageEl.textContent = `${percent}%`;
+        if (progressEl) progressEl.setAttribute('aria-valuenow', String(percent));
+
+        if (progress < 1) {
+          requestAnimationFrame(stepLoader);
+        } else {
+          setTimeout(() => {
+            loader.classList.add('is-done');
+            document.body.classList.remove('is-loading');
+            setTimeout(() => {
+              loader.hidden = true;
+            }, 450);
+          }, 180);
+        }
+      };
+
+      requestAnimationFrame(stepLoader);
     }
+
+    // Handle browser bfcache restore
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        loader.hidden = true;
+        document.body.classList.remove('is-loading');
+      }
+    });
   }
 
-  document.querySelectorAll('[data-accordion-gallery]').forEach((gallery) => {
-    const panels = [...gallery.querySelectorAll('.ag-panel')];
-    if (!panels.length) return;
+  // If currently browsing a project subpage, flag in session so returning home skips the loader
+  if (window.location.pathname.includes('/projects/') || window.location.pathname.includes('projects/')) {
+    try {
+      sessionStorage.setItem('returning_from_subpage', 'true');
+    } catch(e) {}
+  }
 
-    const ratioValue = Number.parseFloat(gallery.dataset.expandRatio || '0.52');
-    const expandRatio = Math.min(0.9, Math.max(0.2, Number.isFinite(ratioValue) ? ratioValue : 0.52));
-    const expandedGrow = panels.length > 1
-      ? (expandRatio * (panels.length - 1)) / (1 - expandRatio)
-      : 1;
-    const indexValue = Number.parseInt(gallery.dataset.defaultIndex || '2', 10);
-    let activeIndex = Math.min(panels.length - 1, Math.max(0, Number.isFinite(indexValue) ? indexValue : 2));
 
-    const setActive = (nextIndex) => {
-      activeIndex = nextIndex;
-      panels.forEach((panel, index) => {
-        const isActive = index === activeIndex;
-        panel.classList.toggle('is-active', isActive);
-        panel.setAttribute('aria-checked', String(isActive));
-        panel.tabIndex = isActive ? 0 : -1;
-        panel.style.flexGrow = isActive ? String(expandedGrow) : '1';
-        panel.style.setProperty('--ag-tilt', (isActive ? 0 : index < activeIndex ? 6 : -6) + 'deg');
-      });
-    };
+  // ==========================================
+  // BENTO GRID INTERACTIVE FILTERING
+  // ==========================================
+  const bentoGrid = document.querySelector('.bento-grid');
+  const bentoCards = bentoGrid ? [...bentoGrid.querySelectorAll('.bento-card, .bento-stacked-wrap')] : [];
+  const bentoFilterPills = document.querySelectorAll('.bento-filter-pill');
 
-    setActive(activeIndex);
+  if (bentoFilterPills.length) {
+    bentoFilterPills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        bentoFilterPills.forEach((p) => {
+          p.classList.remove('is-active');
+          p.setAttribute('aria-selected', 'false');
+        });
+        pill.classList.add('is-active');
+        pill.setAttribute('aria-selected', 'true');
 
-    panels.forEach((panel, index) => {
-      panel.addEventListener('mouseenter', () => {
-        if (finePointer.matches && gallery.dataset.trigger !== 'click') setActive(index);
-      });
-      panel.addEventListener('focus', () => setActive(index));
-      panel.addEventListener('click', () => setActive(index));
-      panel.addEventListener('keydown', (event) => {
-        let nextIndex = index;
-        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (index + 1) % panels.length;
-        else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (index - 1 + panels.length) % panels.length;
-        else if (event.key === 'Home') nextIndex = 0;
-        else if (event.key === 'End') nextIndex = panels.length - 1;
-        else return;
+        const filter = pill.dataset.filter;
 
-        event.preventDefault();
-        setActive(nextIndex);
-        panels[nextIndex].focus();
+        bentoCards.forEach((card) => {
+          const categories = (card.dataset.category || '').split(',').map((c) => c.trim());
+          if (filter === 'all' || categories.includes(filter)) {
+            card.classList.remove('is-dimmed');
+          } else {
+            card.classList.add('is-dimmed');
+          }
+        });
       });
     });
-  });
+  }
 
+  // Make each card click navigate to its target project
+  if (bentoCards.length) {
+    bentoCards.forEach((card) => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('a:not(.bento-card-hitbox), button')) return;
+        const href = card.dataset.href;
+        if (href) {
+          if (href.startsWith('http')) {
+            window.open(href, '_blank', 'noopener,noreferrer');
+          } else {
+            window.location.href = href;
+          }
+        }
+      });
+    });
+  }
+
+  // ==========================================
+  // REVEAL ANIMATIONS
+  // ==========================================
   if (!reduceMotion.matches && 'IntersectionObserver' in window) {
     root.classList.add('has-motion');
-
-    const staggerGroups = [
-      ['.project-card-grid > [data-reveal]', 110],
-      ['.about-layout > [data-reveal]', 120],
-      ['.skills-grid > .skill-card', 85]
-    ];
-
-    staggerGroups.forEach(([selector, interval]) => {
-      document.querySelectorAll(selector).forEach((element, index) => {
-        element.style.setProperty('--reveal-delay', `${index * interval}ms`);
-      });
-    });
 
     const revealObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
@@ -346,20 +304,25 @@ const mountContactMagnetField = (canvas) => {
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-    document.querySelectorAll('[data-reveal], .content-section').forEach((element) => revealObserver.observe(element));
+    document.querySelectorAll('[data-reveal], .content-section, .projects-section-dark').forEach((element) => revealObserver.observe(element));
   }
 
-  let frame = 0;
+  // ==========================================
+  // SCROLL PROGRESS & ACTIVE LINK
+  // ==========================================
+  let scrollFrame = 0;
   const updateScrollState = () => {
-    if (frame) return;
-    frame = window.requestAnimationFrame(() => {
+    if (scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(() => {
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
       const ratio = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
       progressFill?.style.setProperty('transform', `scaleY(${ratio})`);
       progress?.setAttribute('aria-valuenow', String(Math.round(ratio * 100)));
-      header?.classList.toggle('is-scrolled', window.scrollY > 16);
+
+
+      header?.classList.toggle('is-scrolled', window.scrollY > 20);
 
       const marker = window.innerHeight * 0.36;
       let currentLink = null;
@@ -374,7 +337,7 @@ const mountContactMagnetField = (canvas) => {
         else link.removeAttribute('aria-current');
       });
 
-      frame = 0;
+      scrollFrame = 0;
     });
   };
 
@@ -382,106 +345,226 @@ const mountContactMagnetField = (canvas) => {
   window.addEventListener('resize', updateScrollState, { passive: true });
   updateScrollState();
 
+  // ==========================================
+  // MOBILE MENU TOGGLE
+  // ==========================================
   if (menuButton && navigation) {
-    const closeMenu = ({ returnFocus = false } = {}) => {
+    const closeMenu = () => {
       navigation.classList.remove('is-open');
       menuButton.setAttribute('aria-expanded', 'false');
-      menuButton.setAttribute('aria-label', 'Open navigation');
-      if (returnFocus) menuButton.focus();
     };
 
     menuButton.addEventListener('click', () => {
       const isOpen = menuButton.getAttribute('aria-expanded') !== 'true';
       navigation.classList.toggle('is-open', isOpen);
       menuButton.setAttribute('aria-expanded', String(isOpen));
-      menuButton.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
     });
 
     navigation.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => closeMenu());
     });
+  }
 
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && menuButton.getAttribute('aria-expanded') === 'true') {
-        closeMenu({ returnFocus: true });
+  // ==========================================
+  // HERO ROTATING TEXT ANIMATION
+  // ==========================================
+  const textRotators = document.querySelectorAll('.text-rotator');
+
+  textRotators.forEach((rotator) => {
+    const items = [...rotator.querySelectorAll('.text-rotator__item')];
+    if (items.length <= 1) return;
+
+    let currentIndex = items.findIndex((el) => el.classList.contains('is-active'));
+    if (currentIndex < 0) currentIndex = 0;
+
+    let timer = null;
+    let isPaused = false;
+    const intervalMs = parseInt(rotator.dataset.interval, 10) || 3000;
+
+    const updateWidth = (index) => {
+      const activeItem = items[index];
+      if (activeItem) {
+        rotator.style.width = `${activeItem.offsetWidth}px`;
+      }
+    };
+
+    const setWord = (nextIndex) => {
+      if (items.length <= 1) return;
+      const prevItem = items[currentIndex];
+      currentIndex = (nextIndex + items.length) % items.length;
+      const nextItem = items[currentIndex];
+
+      if (prevItem && prevItem !== nextItem) {
+        prevItem.classList.remove('is-active');
+        prevItem.classList.add('is-exiting');
+        setTimeout(() => {
+          prevItem.classList.remove('is-exiting');
+        }, 500);
+      }
+
+      nextItem.classList.remove('is-exiting');
+      nextItem.classList.add('is-active');
+      updateWidth(currentIndex);
+    };
+
+    const startRotator = () => {
+      if (reduceMotion.matches) return;
+      stopRotator();
+      timer = setInterval(() => {
+        if (!isPaused && document.visibilityState === 'visible') {
+          setWord(currentIndex + 1);
+        }
+      }, intervalMs);
+    };
+
+    const stopRotator = () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    rotator.addEventListener('mouseenter', () => { isPaused = true; });
+    rotator.addEventListener('mouseleave', () => { isPaused = false; });
+
+    document.addEventListener('visibilitychange', () => {
+      isPaused = document.hidden;
+    });
+
+    window.addEventListener('resize', () => {
+      updateWidth(currentIndex);
+    }, { passive: true });
+
+    // Measure after fonts are loaded
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => updateWidth(currentIndex));
+    } else {
+      setTimeout(() => updateWidth(currentIndex), 100);
+    }
+
+    updateWidth(currentIndex);
+    startRotator();
+  });
+
+  // ==========================================
+  // ACCORDION GALLERY AUTO-CYCLE & INTERACTION
+  // ==========================================
+  const accordionGalleries = document.querySelectorAll('[data-accordion-gallery]');
+
+  accordionGalleries.forEach((gallery) => {
+    const panels = [...gallery.querySelectorAll('.ag-panel')];
+    if (panels.length <= 1) return;
+
+    let currentIndex = panels.findIndex((p) => p.getAttribute('aria-checked') === 'true');
+    if (currentIndex < 0) {
+      const defaultIdx = parseInt(gallery.dataset.defaultIndex, 10);
+      currentIndex = Number.isInteger(defaultIdx) ? defaultIdx : 0;
+    }
+
+    let timer = null;
+    let isPaused = false;
+    const intervalMs = parseInt(gallery.dataset.interval, 10) || 3000;
+
+    const setActive = (index) => {
+      currentIndex = (index + panels.length) % panels.length;
+      panels.forEach((panel, i) => {
+        const isActive = i === currentIndex;
+        panel.setAttribute('aria-checked', String(isActive));
+        panel.classList.toggle('is-active', isActive);
+        panel.setAttribute('tabindex', isActive ? '0' : '-1');
+
+        if (i < currentIndex) {
+          panel.style.setProperty('--ag-tilt', '-5deg');
+        } else if (i > currentIndex) {
+          panel.style.setProperty('--ag-tilt', '5deg');
+        } else {
+          panel.style.setProperty('--ag-tilt', '0deg');
+        }
+      });
+    };
+
+    const next = () => {
+      setActive(currentIndex + 1);
+    };
+
+    const startAutoPlay = () => {
+      if (reduceMotion.matches) return;
+      stopAutoPlay();
+      timer = setInterval(() => {
+        if (!isPaused && document.visibilityState === 'visible') {
+          next();
+        }
+      }, intervalMs);
+    };
+
+    const stopAutoPlay = () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    // User interaction (hover / click / focus)
+    panels.forEach((panel, i) => {
+      panel.addEventListener('mouseenter', () => {
+        isPaused = true;
+        setActive(i);
+      });
+
+      panel.addEventListener('click', () => {
+        setActive(i);
+        startAutoPlay();
+      });
+
+      panel.addEventListener('focus', () => {
+        isPaused = true;
+        setActive(i);
+      });
+    });
+
+    gallery.addEventListener('mouseenter', () => {
+      isPaused = true;
+    });
+
+    gallery.addEventListener('mouseleave', () => {
+      isPaused = false;
+    });
+
+    // Keyboard navigation (arrows)
+    gallery.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        setActive(currentIndex + 1);
+        panels[currentIndex]?.focus();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        setActive(currentIndex - 1);
+        panels[currentIndex]?.focus();
       }
     });
 
-    const desktopNavigation = window.matchMedia('(min-width: 601px)');
-    const closeOnDesktop = (event) => {
-      if (event.matches) closeMenu();
-    };
-    if (typeof desktopNavigation.addEventListener === 'function') {
-      desktopNavigation.addEventListener('change', closeOnDesktop);
-    } else {
-      desktopNavigation.addListener?.(closeOnDesktop);
-    }
-  }
+    // Pause when tab is hidden
+    document.addEventListener('visibilitychange', () => {
+      isPaused = document.hidden;
+    });
 
+    // Initialize
+    setActive(currentIndex);
+    startAutoPlay();
+  });
+
+  // ==========================================
+  // MAGNETIC CANVAS BACKGROUND
+  // ==========================================
   const magnetCanvas = document.querySelector('.magnet-lines-canvas');
-  const borderGlowTargets = [...document.querySelectorAll('.project-card, .skill-card, .contact-card, .button, .primary-navigation a, .nav-linkedin, .nav-github, .menu-toggle, .skills-marquee-toggle, .back-to-top')];
   let removeMagnetField = null;
-  let removeBorderGlowTracking = null;
-  const syncMagnetField = () => {
-    const shouldEnable = finePointer.matches && !reduceMotion.matches;
-    if (shouldEnable && !removeMagnetField && magnetCanvas) {
+  const syncMagnet = () => {
+    if (finePointer.matches && !reduceMotion.matches && magnetCanvas && !removeMagnetField) {
       removeMagnetField = mountContactMagnetField(magnetCanvas);
-    } else if (!shouldEnable && removeMagnetField) {
+    } else if ((!finePointer.matches || reduceMotion.matches) && removeMagnetField) {
       removeMagnetField();
       removeMagnetField = null;
     }
   };
-  const mountBorderGlowTracking = () => {
-    const removeListeners = borderGlowTargets.map((element) => {
-      const onPointerMove = (event) => {
-        if (event.pointerType === 'touch') return;
-        const rect = element.getBoundingClientRect();
-        const dx = event.clientX - (rect.left + rect.width / 2);
-        const dy = event.clientY - (rect.top + rect.height / 2);
-        const pointerAngle = Math.atan2(dy, dx) * 180 / Math.PI + 90;
-        element.style.setProperty('--border-glow-angle', `${pointerAngle - 20}deg`);
-      };
-      const onPointerLeave = () => element.style.removeProperty('--border-glow-angle');
-      element.addEventListener('pointermove', onPointerMove, { passive: true });
-      element.addEventListener('pointerleave', onPointerLeave, { passive: true });
-      return () => {
-        element.removeEventListener('pointermove', onPointerMove);
-        element.removeEventListener('pointerleave', onPointerLeave);
-        element.style.removeProperty('--border-glow-angle');
-      };
-    });
-
-    return () => removeListeners.forEach((remove) => remove());
-  };
-  const syncBorderGlowTracking = () => {
-    const shouldEnable = finePointer.matches && !reduceMotion.matches;
-    if (shouldEnable && !removeBorderGlowTracking) {
-      removeBorderGlowTracking = mountBorderGlowTracking();
-    } else if (!shouldEnable && removeBorderGlowTracking) {
-      removeBorderGlowTracking();
-      removeBorderGlowTracking = null;
-    }
-  };
-  const syncEffects = () => {
-    syncMagnetField();
-    syncBorderGlowTracking();
-  };
-  const teardownEffects = () => {
-    removeMagnetField?.();
-    removeMagnetField = null;
-    removeBorderGlowTracking?.();
-    removeBorderGlowTracking = null;
-  };
-  const watchPreference = (mediaQuery, callback) => {
-    if (typeof mediaQuery.addEventListener === 'function') {
-      mediaQuery.addEventListener('change', callback);
-    } else {
-      mediaQuery.addListener?.(callback);
-    }
-  };
-  syncEffects();
-  watchPreference(finePointer, syncEffects);
-  watchPreference(reduceMotion, syncEffects);
-  window.addEventListener('pagehide', teardownEffects);
-  window.addEventListener('pageshow', syncEffects);
+  syncMagnet();
 })();

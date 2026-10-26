@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <radialGradient id="spaceBg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1E1035" />
+      <stop offset="50%" stop-color="#0F091F" />
+      <stop offset="100%" stop-color="#05030A" />
+    </radialGradient>
+    <radialGradient id="nebulaGlow" cx="60%" cy="40%" r="40%">
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#3B82F6" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#spaceBg)" />
+  <rect width="800" height="450" fill="url(#nebulaGlow)" />
+  
+  <!-- Distant Stars -->
+  <circle cx="120" cy="80" r="1.5" fill="#FFFFFF" opacity="0.8" />
+  <circle cx="280" cy="40" r="1" fill="#FFFFFF" opacity="0.6" />
+  <circle cx="450" cy="90" r="2" fill="#F472B6" opacity="0.9" />
+  <circle cx="680" cy="60" r="1.5" fill="#60A5FA" opacity="0.7" />
+  <circle cx="720" cy="220" r="1" fill="#FFFFFF" opacity="0.5" />
+  <circle cx="180" cy="360" r="1.5" fill="#FFFFFF" opacity="0.6" />
+  
+  <!-- Asteroids -->
+  <path d="M 520 280 Q 560 250 610 270 Q 640 310 610 350 Q 560 380 520 340 Z" fill="#2D2A3E" stroke="#4C4566" stroke-width="2" />
+  <circle cx="560" cy="300" r="12" fill="#201E2E" />
+  <circle cx="590" cy="330" r="8" fill="#201E2E" />
+  
+  <path d="M 680 140 Q 710 120 740 140 Q 760 170 730 190 Q 690 200 670 170 Z" fill="#242133" stroke="#3D3754" stroke-width="1.5" />
+
+  <!-- Player Spaceship -->
+  <g transform="translate(240, 220) rotate(-15)">
+    <!-- Engine Thruster Flames -->
+    <polygon points="-50,-8 -90,0 -50,8" fill="#F97316" />
+    <polygon points="-45,-4 -75,0 -45,4" fill="#FDE047" />
+    
+    <!-- Ship Wings & Hull -->
+    <polygon points="60,0 -40,-45 -20,0 -40,45" fill="#3B82F6" stroke="#60A5FA" stroke-width="2" />
+    <polygon points="50,0 -20,-16 0,0 -20,16" fill="#1D4ED8" />
+    <!-- Cockpit canopy -->
+    <ellipse cx="10" cy="0" rx="18" ry="7" fill="#38BDF8" opacity="0.85" />
+    
+    <!-- Laser Blasts -->
+    <line x1="70" y1="-25" x2="160" y2="-25" stroke="#EC4899" stroke-width="4" stroke-linecap="round" />
+    <line x1="70" y1="25" x2="160" y2="25" stroke="#EC4899" stroke-width="4" stroke-linecap="round" />
+  </g>
+  
+  <!-- High Score Badge -->
+  <rect x="50" y="40" width="130" height="30" rx="8" fill="#181426" stroke="#8B5CF6" stroke-width="1" />
+  <text x="65" y="60" fill="#C084FC" font-family="sans-serif" font-size="12" font-weight="700">SCORE: 18,450</text>
+</svg>
