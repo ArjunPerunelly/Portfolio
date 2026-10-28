@@ -354,7 +354,8 @@ const mountContactMagnetField = (canvas) => {
       menuButton.setAttribute('aria-expanded', 'false');
     };
 
-    menuButton.addEventListener('click', () => {
+    menuButton.addEventListener('click', (e) => {
+      e.stopPropagation();
       const isOpen = menuButton.getAttribute('aria-expanded') !== 'true';
       navigation.classList.toggle('is-open', isOpen);
       menuButton.setAttribute('aria-expanded', String(isOpen));
@@ -362,6 +363,18 @@ const mountContactMagnetField = (canvas) => {
 
     navigation.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => closeMenu());
+    });
+
+    document.addEventListener('click', (e) => {
+      if (navigation.classList.contains('is-open') && !navigation.contains(e.target) && !menuButton.contains(e.target)) {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navigation.classList.contains('is-open')) {
+        closeMenu();
+      }
     });
   }
 
